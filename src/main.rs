@@ -12,13 +12,13 @@ error_chain! {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let target = "https://github.com/twbs/bootstrap/archive/v4.0.0.zip";
+    let target = "https://github.com/Byron/dua-cli/releases/download/v2.10.2/dua-v2.10.2-x86_64-unknown-linux-musl.tar.gz";
     let response = reqwest::get(target).await?;
     assert!(response.status().is_success());
 
     let content = response.bytes().await?;
 
-    let path = Path::new("./download.zip");
+    let path = Path::new("dua-v2.10.2-x86_64-unknown-linux-musl.tar.gz");
 
     let mut file = match File::create(&path) {
         Err(why) => panic!("couldn't create {}", why),
