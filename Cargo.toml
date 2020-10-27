@@ -12,3 +12,4 @@ native-tls = { version = "0.2.4", features = ["vendored"] }
 reqwest = { version = "0.10", features = ["json"] }
 tokio = { version = "0.2", features = ["full"] }
 error-chain = "0.12.2"
+clap = "3.0.0-beta.2"
