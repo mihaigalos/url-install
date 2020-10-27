@@ -1,5 +1,5 @@
 [package]
-name = "url_install"
+name = "url-install"
 version = "0.1.0"
 authors = ["Mihai Galos <mihaigalos@gmail.com>"]
 edition = "2018"
