@@ -5,6 +5,7 @@ use std::{
 };
 
 use exitfailure::ExitFailure;
+use http::StatusCode;
 use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::Url;
 use reqwest::{header, Client};
@@ -23,14 +24,17 @@ impl<R: Read> Read for DownloadProgress<R> {
     }
 }
 
-fn download(url: &str) -> Result<(), ExitFailure> {
+#[tokio::main]
+async fn download(url: &str) -> Result<(), ExitFailure> {
     let url = Url::parse(url)?;
     let client = Client::new();
+    let res = reqwest::Client::builder().user_agent("curl").build();
 
     let total_size = {
-        let resp = client.head(url.as_str()).send()?;
+        let resp = client.head(url.as_str()).send().await.unwrap();
+
         println!("{}", resp.status());
-        if resp.status().is_success() {
+        if resp.status() == StatusCode::OK {
             resp.headers()
                 .get(header::CONTENT_LENGTH)
                 .and_then(|ct_len| ct_len.to_str().ok())
@@ -66,7 +70,7 @@ fn download(url: &str) -> Result<(), ExitFailure> {
 
     let mut source = DownloadProgress {
         progress_bar: pb,
-        inner: request.send()?,
+        inner: request.send(),
     };
 
     let mut dest = fs::OpenOptions::new()
@@ -74,7 +78,7 @@ fn download(url: &str) -> Result<(), ExitFailure> {
         .append(true)
         .open(&file)?;
 
-    let _ = copy(&mut source, &mut dest)?;
+    // let _ = copy(&mut source, &mut dest)?;
 
     println!(
         "Download of '{}' has been completed.",
@@ -83,6 +87,7 @@ fn download(url: &str) -> Result<(), ExitFailure> {
 
     Ok(())
 }
+
 fn main() {
     download("https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip");
 }
