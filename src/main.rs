@@ -1,5 +1,5 @@
 use error_chain::error_chain;
-use std::{env, fs::File, io::prelude::*, path::Path, process};
+use std::{env, fs::File, io::Write, path::Path, process};
 
 mod slicer;
 use slicer::Slicer;
@@ -10,23 +10,27 @@ error_chain! {
      }
 }
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    let args = get_program_arguments();
-    let full_url = &*args[1];
-
-    let response = reqwest::get(full_url).await?;
-    assert!(response.status().is_success());
-
-    let content = response.bytes().await?;
-
+fn write_file(full_url: &str, response: reqwest::blocking::Response) -> std::io::Result<()> {
+    let content = response.bytes().unwrap();
     let path = Path::new(Slicer::target_with_extension(full_url));
+
+    // let mut file = File::create(&path).expect("Unable to create file");
 
     let mut file = match File::create(&path) {
         Err(why) => panic!("couldn't create {}", why),
         Ok(file) => file,
     };
     file.write_all(&content)?;
+    Ok(())
+}
+
+fn main() -> std::io::Result<()> {
+    let args = get_program_arguments();
+    let full_url = &*args[1];
+
+    let response = reqwest::blocking::get(full_url).unwrap();
+    // assert!(response.status().is_success());
+    write_file(full_url, response)?;
     Ok(())
 }
 
