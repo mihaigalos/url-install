@@ -12,15 +12,11 @@ error_chain! {
 
 fn write_file(full_url: &str, response: reqwest::blocking::Response) -> std::io::Result<()> {
     let content = response.bytes().unwrap();
-    let path = Path::new(Slicer::target_with_extension(full_url));
+    let target_with_extension = Path::new(Slicer::target_with_extension(full_url));
 
-    // let mut file = File::create(&path).expect("Unable to create file");
-
-    let mut file = match File::create(&path) {
-        Err(why) => panic!("couldn't create {}", why),
-        Ok(file) => file,
-    };
-    file.write_all(&content)?;
+    File::create(&target_with_extension)
+        .expect("Unable to create file")
+        .write_all(&content)?;
     Ok(())
 }
 
