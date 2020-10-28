@@ -5,16 +5,13 @@ use std::path::Path;
 
 use clap::App;
 
+mod slicer;
+
 error_chain! {
      foreign_links {
          Io(std::io::Error);
          HttpRequest(reqwest::Error);
      }
-}
-
-fn target_with_extension(s: &str) -> &str {
-    let pos_of_last_slash = s.rfind('/').unwrap();
-    &s[pos_of_last_slash + 1..]
 }
 
 #[tokio::main]
@@ -29,8 +26,8 @@ async fn main() -> Result<()> {
         target = o;
     }
 
-    let _name_with_extension = target_with_extension(&target).to_string();
-    println!("{}", _name_with_extension);
+    // let _name_with_extension = target_with_extension(&target).to_string();
+    // println!("{}", _name_with_extension);
 
     let response = reqwest::get(target).await?;
     assert!(response.status().is_success());
