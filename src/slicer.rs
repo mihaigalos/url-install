@@ -1,11 +1,11 @@
-struct Slicer;
+pub struct Slicer;
 impl Slicer {
-    fn target_with_extension(s: &str) -> &str {
+    pub fn target_with_extension(s: &str) -> &str {
         let pos_of_last_slash = s.rfind('/').unwrap();
         &s[pos_of_last_slash + 1..]
     }
 
-    fn target(s: &str) -> &str {
+    pub fn target(s: &str) -> &str {
         let target_with_extension = Slicer::target_with_extension(s);
         let pos_of_first_dash = target_with_extension.find('-').unwrap();
         &target_with_extension[..pos_of_first_dash]

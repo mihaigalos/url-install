@@ -1,12 +1,8 @@
 use error_chain::error_chain;
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::Path;
-
-use clap::App;
+use std::{env, fs::File, io::prelude::*, path::Path, process};
 
 mod slicer;
-
+use slicer::Slicer;
 error_chain! {
      foreign_links {
          Io(std::io::Error);
@@ -16,25 +12,15 @@ error_chain! {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let matches = App::new("url-install")
-        .arg("<output> 'Sets an optional output file'")
-        .get_matches();
+    let args = get_program_arguments();
+    let full_url = &*args[1];
 
-    let mut target = ""; // https://github.com/Byron/dua-cli/releases/download/v2.10.2/dua-v2.10.2-x86_64-unknown-linux-musl.tar.gz
-
-    if let Some(o) = matches.value_of("output") {
-        target = o;
-    }
-
-    // let _name_with_extension = target_with_extension(&target).to_string();
-    // println!("{}", _name_with_extension);
-
-    let response = reqwest::get(target).await?;
+    let response = reqwest::get(full_url).await?;
     assert!(response.status().is_success());
 
     let content = response.bytes().await?;
 
-    let path = Path::new("dua-v2.10.2-x86_64-unknown-linux-musl.tar.gz");
+    let path = Path::new(Slicer::target_with_extension(full_url));
 
     let mut file = match File::create(&path) {
         Err(why) => panic!("couldn't create {}", why),
@@ -42,4 +28,13 @@ async fn main() -> Result<()> {
     };
     file.write_all(&content)?;
     Ok(())
+}
+
+fn get_program_arguments() -> Vec<String> {
+    let args: Vec<String> = env::args().collect();
+    if args.len() == 1 {
+        println!("Usage: url-install <url1> <url2> .. <urln>");
+        process::exit(0x0001);
+    }
+    args
 }
