@@ -1,6 +1,8 @@
 use error_chain::error_chain;
 use std::{env, fs::File, io::Write, path::Path, process};
 
+use http::StatusCode;
+
 mod slicer;
 use slicer::Slicer;
 error_chain! {
@@ -25,7 +27,8 @@ fn main() -> std::io::Result<()> {
     let full_url = &*args[1];
 
     let response = reqwest::blocking::get(full_url).unwrap();
-    // assert!(response.status().is_success());
+    let status = response.status();
+    assert!(status == StatusCode::OK);
     write_file(full_url, response)?;
     Ok(())
 }
