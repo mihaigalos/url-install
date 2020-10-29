@@ -1,14 +1,14 @@
 use error_chain::error_chain;
 use std::{env, process};
 
-mod slicer;
-use slicer::Slicer;
-
 mod downloader;
 use downloader::BlockingDownloader;
 
+mod slicer;
+
 mod traits;
-use traits::Downloader;
+mod url_install;
+use url_install::UrlInstall;
 
 error_chain! {
      foreign_links {
@@ -21,8 +21,11 @@ fn main() -> std::io::Result<()> {
     let args = get_program_arguments();
     let from_url = &*args[1];
 
-    let downloader = BlockingDownloader {};
-    downloader.get(from_url, Slicer::target_with_extension(from_url))?;
+    let url_install = UrlInstall {
+        downloader: Box::new(BlockingDownloader {}),
+    };
+    url_install.run(from_url)?;
+
     Ok(())
 }
 
