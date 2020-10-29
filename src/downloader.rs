@@ -1,14 +1,14 @@
 use http::StatusCode;
 use std::{fs::File, io::Write, path::Path};
 
-pub struct FileDownloader;
+pub struct Downloader;
 
-impl FileDownloader {
+impl Downloader {
     pub fn run(full_url: &str, file: &str) -> std::io::Result<()> {
-        let response = FileDownloader::download(full_url);
+        let response = Downloader::download(full_url);
         assert!(response.status() == StatusCode::OK);
 
-        FileDownloader::write_file(file, response)?;
+        Downloader::write_file(file, response)?;
         Ok(())
     }
 

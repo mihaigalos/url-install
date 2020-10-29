@@ -4,8 +4,8 @@ use std::{env, process};
 mod slicer;
 use slicer::Slicer;
 
-mod file_downloader;
-use file_downloader::FileDownloader;
+mod downloader;
+use downloader::Downloader;
 
 error_chain! {
      foreign_links {
@@ -18,7 +18,7 @@ fn main() -> std::io::Result<()> {
     let args = get_program_arguments();
     let full_url = &*args[1];
 
-    FileDownloader::run(full_url, Slicer::target_with_extension(full_url))?;
+    Downloader::run(full_url, Slicer::target_with_extension(full_url))?;
     Ok(())
 }
 
