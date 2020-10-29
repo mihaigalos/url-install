@@ -1,2 +1,2 @@
 # url-install
-Install packages from remove archives using just their url.
+Install packages from remote archives using just their url.
