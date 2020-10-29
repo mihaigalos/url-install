@@ -1,10 +1,12 @@
 use error_chain::error_chain;
-use std::{env, fs::File, io::Write, path::Path, process};
-
-use http::StatusCode;
+use std::{env, process};
 
 mod slicer;
 use slicer::Slicer;
+
+mod file_downloader;
+use file_downloader::FileDownloader;
+
 error_chain! {
      foreign_links {
          Io(std::io::Error);
@@ -12,24 +14,11 @@ error_chain! {
      }
 }
 
-fn write_file(full_url: &str, response: reqwest::blocking::Response) -> std::io::Result<()> {
-    let content = response.bytes().unwrap();
-    let target_with_extension = Path::new(Slicer::target_with_extension(full_url));
-
-    File::create(&target_with_extension)
-        .expect("Unable to create file")
-        .write_all(&content)?;
-    Ok(())
-}
-
 fn main() -> std::io::Result<()> {
     let args = get_program_arguments();
     let full_url = &*args[1];
 
-    let response = reqwest::blocking::get(full_url).unwrap();
-    let status = response.status();
-    assert!(status == StatusCode::OK);
-    write_file(full_url, response)?;
+    FileDownloader::run(full_url, Slicer::target_with_extension(full_url))?;
     Ok(())
 }
 
