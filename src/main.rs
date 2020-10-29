@@ -5,7 +5,10 @@ mod slicer;
 use slicer::Slicer;
 
 mod downloader;
-use downloader::{DefaultDownloader, Downloader};
+use downloader::BlockingDownloader;
+
+mod traits;
+use traits::Downloader;
 
 error_chain! {
      foreign_links {
@@ -18,7 +21,7 @@ fn main() -> std::io::Result<()> {
     let args = get_program_arguments();
     let full_url = &*args[1];
 
-    let downloader = DefaultDownloader {};
+    let downloader = BlockingDownloader {};
     downloader.run(full_url, Slicer::target_with_extension(full_url))?;
     Ok(())
 }
