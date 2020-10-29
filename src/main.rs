@@ -19,10 +19,10 @@ error_chain! {
 
 fn main() -> std::io::Result<()> {
     let args = get_program_arguments();
-    let full_url = &*args[1];
+    let from_url = &*args[1];
 
     let downloader = BlockingDownloader {};
-    downloader.run(full_url, Slicer::target_with_extension(full_url))?;
+    downloader.get(from_url, Slicer::target_with_extension(from_url))?;
     Ok(())
 }
 
