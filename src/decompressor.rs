@@ -1,7 +1,6 @@
 use crate::traits::Decompressor;
 use flate2::read::GzDecoder;
 use std::fs::File;
-use std::path::Path;
 use tar::Archive;
 
 use unzip::Unzipper;
@@ -38,7 +37,7 @@ mod tests {
         let out_file = "test_decompression.tar.gz.txt";
 
         TarGzDecompressor {}.run(in_file).unwrap();
-        assert!(Path::new(out_file).exists());
+        assert!(std::path::Path::new(out_file).exists());
         std::fs::remove_file(out_file).unwrap();
     }
 
@@ -48,7 +47,7 @@ mod tests {
         let out_file = "test_decompression.zip.txt";
 
         ZipDecompressor {}.run(in_file).unwrap();
-        assert!(Path::new(out_file).exists());
+        assert!(std::path::Path::new(out_file).exists());
         std::fs::remove_file(out_file).unwrap();
     }
 }
