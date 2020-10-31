@@ -12,14 +12,15 @@ pub struct UrlInstall {
 }
 impl UrlInstall {
     pub fn run(&self, from_url: &str) -> std::io::Result<()> {
-        let archive_file = &(self.temporary_folder() + Slicer::target_with_extension(from_url));
-        println!("{}", archive_file);
+        let temporary_folder = self.temporary_folder();
+        let archive_file = &(temporary_folder.clone() + Slicer::target_with_extension(from_url));
+
         self.downloader.get(from_url, archive_file)?;
         self.decompressor.run(archive_file)?;
-        // std::fs::remove_file(archive_file).unwrap();
+        std::fs::remove_file(archive_file).unwrap();
 
-        // let target = Slicer::target(archive_file);
-        // if !Path::new(target).exists() {}
+        let target = &(temporary_folder + Slicer::target(archive_file));
+        if !Path::new(target).exists() {}
 
         // self.ensure_executable_permissions(target)?;
 
