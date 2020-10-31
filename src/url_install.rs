@@ -7,9 +7,9 @@ pub struct UrlInstall {
 }
 impl UrlInstall {
     pub fn run(&self, from_url: &str) -> std::io::Result<()> {
-        self.downloader
-            .get(from_url, Slicer::target_with_extension(from_url))?;
-
+        let file = Slicer::target_with_extension(from_url);
+        self.downloader.get(from_url, file)?;
+        self.decompressor.run(file)?;
         Ok(())
     }
 }
