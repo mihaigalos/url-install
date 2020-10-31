@@ -14,3 +14,5 @@ tokio = { version = "0.2", features = ["full"] }
 error-chain = "0.12.2"
 clap = "3.0.0-beta.2"
 http = ""
+tar="0.4.30"
+flate2 = "1.0.18"

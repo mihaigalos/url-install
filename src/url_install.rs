@@ -1,8 +1,9 @@
 use crate::slicer::Slicer;
-use crate::traits::Downloader;
+use crate::traits::{Decompressor, Downloader};
 
 pub struct UrlInstall {
     pub downloader: Box<dyn Downloader>,
+    pub decompressor: Box<dyn Decompressor>,
 }
 impl UrlInstall {
     pub fn run(&self, from_url: &str) -> std::io::Result<()> {

@@ -1,10 +1,6 @@
 use crate::traits::Downloader;
 use http::StatusCode;
-use std::{
-    fs::{self, File},
-    io::Write,
-    path::Path,
-};
+use std::{fs::File, io::Write, path::Path};
 
 pub struct BlockingDownloader;
 impl Downloader for BlockingDownloader {

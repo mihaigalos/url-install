@@ -3,6 +3,8 @@ use std::{env, process};
 
 mod downloader;
 use downloader::BlockingDownloader;
+mod decompressor;
+use decompressor::TarGzDecompressor;
 
 mod slicer;
 
@@ -23,6 +25,7 @@ fn main() -> std::io::Result<()> {
 
     let url_install = UrlInstall {
         downloader: Box::new(BlockingDownloader {}),
+        decompressor: Box::new(TarGzDecompressor {}),
     };
     url_install.run(from_url)?;
 
