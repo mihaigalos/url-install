@@ -31,13 +31,13 @@ impl UrlInstall {
     }
 
     #[cfg(any(target_os = "linux", target_os = "mac"))]
-    fn ensure_executable_permissions(&self, file: &str) -> std::io::Result<()> {
+    fn ensure_executable_permissions(file: &str) -> std::io::Result<()> {
         fs::set_permissions(file, fs::Permissions::from_mode(0o755))?;
         Ok(())
     }
 
     #[cfg(target_os = "windows")]
-    fn ensure_executable_permissions(&self, file: &str) -> std::io::Result<()> {
+    fn ensure_executable_permissions(file: &str) -> std::io::Result<()> {
         Ok(())
     }
 
