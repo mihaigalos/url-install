@@ -19,12 +19,9 @@ impl UrlInstall {
         self.decompressor.run(archive_file)?;
         std::fs::remove_file(archive_file).unwrap();
 
-        let target = &(temporary_folder.clone() + Slicer::target_without_extension(archive_file));
+        let archive_without_extension =
+            &(temporary_folder.clone() + Slicer::target_without_extension(archive_file));
 
-        if Path::new(target).exists() {
-            println!("Exists: {}.", target);
-            return Ok(());
-        }
         // self.ensure_executable_permissions(target)?;
 
         Ok(())
