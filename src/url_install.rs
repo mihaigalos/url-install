@@ -24,31 +24,7 @@ impl UrlInstall {
         let archive_without_extension =
             &(temporary_folder.clone() + Slicer::target_without_extension(archive_file));
 
-        let mut executable = "";
-        match UrlInstall::get_target(archive_without_extension) {
-            Some(x) => {
-                let target_type = fs::metadata(x).unwrap();
-                if target_type.is_file() {
-                    UrlInstall::ensure_executable_permissions(x)?;
-                    executable = x;
-                } else {
-                    println!("Looking for executable files in: {}.", x);
-                    for file in fs::read_dir(x).unwrap() {
-                        let path = file.unwrap().path();
-                        if is_executable(&path) {
-                            println!("Found executable: {:?}", &path);
-                            executable = path.to_str().unwrap();
-                        }
-                    }
-                }
-            }
-            None => {
-                println!(
-                    "Cannot determine executable in: {}.",
-                    archive_without_extension
-                );
-            }
-        }
+        let executable = &UrlInstall::get_executable(archive_without_extension);
 
         Ok(())
     }
@@ -85,6 +61,36 @@ impl UrlInstall {
             i -= 1;
         }
         return None;
+    }
+
+    fn get_executable(archive_without_extension: &str) -> Option<String> {
+        let mut executable: String = "".to_string();
+        match UrlInstall::get_target(archive_without_extension) {
+            Some(x) => {
+                let target_type = fs::metadata(x).unwrap();
+                if target_type.is_file() {
+                    UrlInstall::ensure_executable_permissions(x).ok()?;
+                    executable = x.to_string();
+                } else {
+                    println!("Looking for executable files in: {}.", x);
+                    for file in fs::read_dir(x).unwrap() {
+                        let path = file.unwrap().path();
+                        if is_executable(&path) {
+                            println!("Found executable: {:?}", &path);
+                            executable = path.to_str().unwrap().to_string();
+                            break;
+                        }
+                    }
+                }
+            }
+            None => {
+                println!(
+                    "Cannot determine executable in: {}.",
+                    archive_without_extension
+                );
+            }
+        }
+        Some(executable)
     }
 }
 
