@@ -19,9 +19,12 @@ impl UrlInstall {
         self.decompressor.run(archive_file)?;
         std::fs::remove_file(archive_file).unwrap();
 
-        let target = &(temporary_folder + Slicer::target(archive_file));
-        if Path::new(target).exists() {}
+        let target = &(temporary_folder.clone() + Slicer::target_without_extension(archive_file));
 
+        if Path::new(target).exists() {
+            println!("Exists: {}.", target);
+            return Ok(());
+        }
         // self.ensure_executable_permissions(target)?;
 
         Ok(())
@@ -40,5 +43,37 @@ impl UrlInstall {
     #[cfg(target_os = "windows")]
     fn ensure_executable_permissions(&self, file: &str) -> std::io::Result<()> {
         Ok(())
+    }
+
+    fn get_target(file: &str) -> Option<&str> {
+        let path = file;
+        let mut i = path.len();
+
+        while i > 0 {
+            if Path::new(&path[..i]).exists() {
+                return Some(&path[..i]);
+            } else {
+                if path.to_string().chars().nth(i - 1).unwrap() == '/' {
+                    return None;
+                } else {
+                }
+            }
+            i -= 1;
+        }
+        return None;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_target() {
+        let expected = "test/test_decompression.zip";
+
+        let is = UrlInstall::get_target("test/test_decompression.zipAAAA").unwrap();
+
+        assert_eq!(is, expected);
     }
 }
