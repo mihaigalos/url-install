@@ -20,7 +20,7 @@ impl UrlInstall {
         std::fs::remove_file(archive_file).unwrap();
 
         let target = &(temporary_folder + Slicer::target(archive_file));
-        if !Path::new(target).exists() {}
+        if Path::new(target).exists() {}
 
         // self.ensure_executable_permissions(target)?;
 
