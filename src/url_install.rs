@@ -22,7 +22,10 @@ impl UrlInstall {
         let archive_without_extension =
             &(temporary_folder.clone() + Slicer::target_without_extension(archive_file));
 
-        // self.ensure_executable_permissions(target)?;
+        match UrlInstall::get_target(archive_without_extension) {
+            Some(x) => UrlInstall::ensure_executable_permissions(x)?,
+            None => println!("None."),
+        }
 
         Ok(())
     }
