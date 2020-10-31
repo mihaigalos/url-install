@@ -76,7 +76,6 @@ impl UrlInstall {
                     for file in fs::read_dir(x).unwrap() {
                         let path = file.unwrap().path();
                         if is_executable(&path) {
-                            println!("Found executable: {:?}", &path);
                             executable = path.to_str().unwrap().to_string();
                             break;
                         }
@@ -90,7 +89,13 @@ impl UrlInstall {
                 );
             }
         }
-        Some(executable)
+        if executable.len() > 0 {
+            println!("Found executable: {:?}", executable);
+            Some(executable)
+        } else {
+            println!("No executables found.");
+            None
+        }
     }
 }
 
