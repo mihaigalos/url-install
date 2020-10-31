@@ -11,7 +11,10 @@ impl Decompressor for TarGzDecompressor {
         let tar_gz = File::open(file)?;
         let tar = GzDecoder::new(tar_gz);
         let mut archive = Archive::new(tar);
-        archive.unpack(".")?;
+
+        let pos_of_last_slash = file.rfind('/').unwrap();
+
+        archive.unpack(&file[..pos_of_last_slash])?;
         Ok(())
     }
 }
@@ -19,7 +22,8 @@ impl Decompressor for TarGzDecompressor {
 pub struct ZipDecompressor;
 impl Decompressor for ZipDecompressor {
     fn run(&self, file: &str) -> std::io::Result<()> {
-        Unzipper::new(File::open(file).unwrap(), ".")
+        let pos_of_last_slash = file.rfind('/').unwrap();
+        Unzipper::new(File::open(file).unwrap(), &file[..pos_of_last_slash])
             .unzip()
             .unwrap();
 
@@ -34,7 +38,7 @@ mod tests {
     #[test]
     fn targz_decompression_works() {
         let in_file = "test/test_decompression.tar.gz";
-        let out_file = "test_decompression.tar.gz.txt";
+        let out_file = "test/test_decompression.tar.gz.txt";
 
         TarGzDecompressor {}.run(in_file).unwrap();
         assert!(std::path::Path::new(out_file).exists());
@@ -44,7 +48,7 @@ mod tests {
     #[test]
     fn zip_decompression_works() {
         let in_file = "test/test_decompression.zip";
-        let out_file = "test_decompression.zip.txt";
+        let out_file = "test/test_decompression.zip.txt";
 
         ZipDecompressor {}.run(in_file).unwrap();
         assert!(std::path::Path::new(out_file).exists());
