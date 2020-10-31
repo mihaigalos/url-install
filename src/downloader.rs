@@ -40,13 +40,13 @@ mod tests {
 
     #[test]
     fn download_blocking_works() {
-        let mut is_file_downloaded = false;
+        let mut is_file_present = false;
         let file = "dua-v2.10.2-x86_64-unknown-linux-musl.tar.gz";
         BlockingDownloader{}.get("https://github.com/Byron/dua-cli/releases/download/v2.10.2/dua-v2.10.2-x86_64-unknown-linux-musl.tar.gz", file).unwrap();
         if Path::new(file).exists() {
-            is_file_downloaded = true;
+            is_file_present = true;
         }
-        fs::remove_file(file).unwrap();
-        assert!(is_file_downloaded);
+        std::fs::remove_file(file).unwrap();
+        assert!(is_file_present);
     }
 }
