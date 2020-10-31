@@ -24,17 +24,9 @@ fn main() -> std::io::Result<()> {
     let args = get_program_arguments();
     let from_url = &*args[1];
 
-    let decompressor: Box<dyn Decompressor> = if from_url.ends_with(".tar.gz") {
-        Box::new(TarGzDecompressor {})
-    } else if from_url.ends_with(".zip") {
-        Box::new(ZipDecompressor {})
-    } else {
-        panic!("Unknown extension type.")
-    };
-
     let url_install = UrlInstall {
         downloader: Box::new(BlockingDownloader {}),
-        decompressor: decompressor,
+        decompressor: get_decompressor(from_url),
     };
     url_install.run(from_url)?;
 
@@ -48,4 +40,16 @@ fn get_program_arguments() -> Vec<String> {
         process::exit(0x0001);
     }
     args
+}
+
+fn get_decompressor(url: &str) -> Box<dyn Decompressor> {
+    let decompressor: Box<dyn Decompressor> = if url.ends_with(".tar.gz") {
+        Box::new(TarGzDecompressor {})
+    } else if url.ends_with(".zip") {
+        Box::new(ZipDecompressor {})
+    } else {
+        panic!("Unknown extension type.")
+    };
+
+    decompressor
 }
