@@ -4,12 +4,10 @@ use std::{env, process};
 mod downloader;
 use downloader::BlockingDownloader;
 mod decompressor;
-use decompressor::{TarGzDecompressor, ZipDecompressor};
 
 mod slicer;
 
 mod traits;
-use traits::Decompressor;
 mod url_install;
 use url_install::UrlInstall;
 
@@ -26,7 +24,7 @@ fn main() -> std::io::Result<()> {
 
     let url_install = UrlInstall {
         downloader: Box::new(BlockingDownloader {}),
-        decompressor: get_decompressor(from_url),
+        decompressor: UrlInstall::get_decompressor(from_url),
     };
     url_install.run(from_url, "/usr/bin/")?;
 
@@ -40,16 +38,4 @@ fn get_program_arguments() -> Vec<String> {
         process::exit(0x0001);
     }
     args
-}
-
-fn get_decompressor(url: &str) -> Box<dyn Decompressor> {
-    let decompressor: Box<dyn Decompressor> = if url.ends_with(".tar.gz") {
-        Box::new(TarGzDecompressor {})
-    } else if url.ends_with(".zip") {
-        Box::new(ZipDecompressor {})
-    } else {
-        panic!("Unknown extension type.")
-    };
-
-    decompressor
 }
