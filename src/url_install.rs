@@ -115,7 +115,6 @@ impl UrlInstall {
                     UrlInstall::ensure_executable_permissions(x).ok()?;
                     executable = x.to_string();
                 } else {
-                    println!("Looking for executable files in: {}.", x);
                     for file in fs::read_dir(x).unwrap() {
                         let path = file.unwrap().path();
                         if is_executable(&path) {
