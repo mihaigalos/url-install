@@ -120,4 +120,12 @@ mod tests {
 
         assert_eq!(is, expected);
     }
+    #[test]
+    fn get_executable_when_in_subfolder() {
+        let expected = "test/subfolder/example_executable";
+
+        let is = UrlInstall::get_executable("test/subfolder/example_executable").unwrap();
+
+        assert_eq!(is, expected);
+    }
 }
