@@ -128,4 +128,9 @@ mod tests {
 
         assert_eq!(is, expected);
     }
+    #[test]
+    #[should_panic]
+    fn get_executable_panics_when_no_executables_in_subfolder() {
+        UrlInstall::get_executable("test/subfolder/no_executables/example_executable").unwrap();
+    }
 }
