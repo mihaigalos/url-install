@@ -1,6 +1,8 @@
 extern crate chrono;
 
 use crate::decompressor::{TarGzDecompressor, ZipDecompressor};
+
+#[cfg(test)]
 use crate::downloader::BlockingDownloader;
 use crate::slicer::Slicer;
 use crate::traits::{Decompressor, Downloader};
