@@ -38,4 +38,3 @@ jobs:
       run: cargo build --verbose --all --features "strict"
     - name: Run tests
       run: cargo test --verbose --all --features "strict"
-
