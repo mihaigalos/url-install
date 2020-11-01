@@ -13,7 +13,7 @@ pub struct UrlInstall {
     pub decompressor: Box<dyn Decompressor>,
 }
 impl UrlInstall {
-    pub fn run(&self, from_url: &str) -> std::io::Result<()> {
+    pub fn run(&self, from_url: &str, to_folder: &str) -> std::io::Result<()> {
         let temporary_folder = UrlInstall::temporary_folder();
         let archive_file = &(temporary_folder.clone() + Slicer::target_with_extension(from_url));
 
@@ -24,7 +24,14 @@ impl UrlInstall {
         let archive_without_extension =
             &(temporary_folder.clone() + Slicer::target_without_extension(archive_file));
 
-        let executable = &UrlInstall::get_executable(archive_without_extension);
+        let executable = &UrlInstall::get_executable(archive_without_extension).unwrap();
+
+        std::fs::rename(
+            executable,
+            to_folder.to_string() + Slicer::target(archive_without_extension),
+        )?;
+
+        UrlInstall::remove_temporary_folder(&temporary_folder)?;
 
         Ok(())
     }
@@ -43,6 +50,11 @@ impl UrlInstall {
     fn temporary_folder() -> String {
         fs::create_dir("tmp").unwrap();
         return "tmp/".to_string();
+    }
+
+    fn remove_temporary_folder(folder: &str) -> std::io::Result<()> {
+        fs::remove_dir_all(folder)?;
+        Ok(())
     }
 
     fn get_target(file: &str) -> Option<&str> {
@@ -90,7 +102,6 @@ impl UrlInstall {
             }
         }
         if executable.len() > 0 {
-            println!("Found executable: {:?}", executable);
             Some(executable)
         } else {
             println!("No executables found.");

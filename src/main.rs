@@ -28,7 +28,7 @@ fn main() -> std::io::Result<()> {
         downloader: Box::new(BlockingDownloader {}),
         decompressor: get_decompressor(from_url),
     };
-    url_install.run(from_url)?;
+    url_install.run(from_url, "/usr/bin/")?;
 
     Ok(())
 }
