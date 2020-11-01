@@ -111,4 +111,13 @@ mod tests {
 
         assert_eq!(is, expected);
     }
+
+    #[test]
+    fn get_executable_when_typical() {
+        let expected = "test/example_executable";
+
+        let is = UrlInstall::get_executable("test/example_executable").unwrap();
+
+        assert_eq!(is, expected);
+    }
 }
