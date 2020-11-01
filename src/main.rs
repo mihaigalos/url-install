@@ -21,12 +21,13 @@ error_chain! {
 fn main() -> std::io::Result<()> {
     let args = get_program_arguments();
     let from_url = &*args[1];
+    let to_path = &(args[2].to_string() + &"/".to_string());
 
     let url_install = UrlInstall {
         downloader: Box::new(BlockingDownloader {}),
         decompressor: UrlInstall::get_decompressor(from_url),
     };
-    url_install.run(from_url, "/usr/bin/")?;
+    url_install.run(from_url, to_path)?;
 
     Ok(())
 }

@@ -3,20 +3,24 @@
 Install packages from remote archives using just their url.
 Supported formats : `*.tar.gz`, `*.zip`.
 
+`sudo` required if writing to system paths.
+
 ### Building
 
 ```bash
-cargo build
+cargo build # Result now in target/debug/url-install
 ```
 
 ### Using
 
 ```bash
-sudo target/debug/url-install [url]
+[sudo] url-install [url] [install_to_path]
 ```
 
 ### Example Usage
 
 ```bash
-sudo target/debug/url-install https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip
+url-install https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip /tmp
+
+sudo url-install https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip /usr/bin
 ```
