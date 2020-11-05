@@ -26,6 +26,8 @@ impl UrlInstall {
         let temporary_folder = UrlInstall::temporary_folder();
         let archive_file = &(temporary_folder.clone() + Slicer::target_with_extension(from_url));
 
+        println!("Downloading {}", archive_file);
+
         self.downloader.get(from_url, archive_file)?;
         self.decompressor.run(archive_file)?;
         std::fs::remove_file(archive_file).unwrap();
@@ -35,6 +37,7 @@ impl UrlInstall {
 
         let executable = &UrlInstall::get_executable(archive_without_extension).unwrap();
 
+        println!("Installing {}", to_folder.to_string() + Slicer::target(archive_without_extension));
         std::fs::rename(
             executable,
             to_folder.to_string() + Slicer::target(archive_without_extension),
