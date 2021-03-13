@@ -37,7 +37,10 @@ impl UrlInstall {
 
         let executable = &UrlInstall::get_executable(archive_without_extension).unwrap();
 
-        println!("Installing {}", to_folder.to_string() + Slicer::target(archive_without_extension));
+        println!(
+            "Installing {}",
+            to_folder.to_string() + Slicer::target(archive_without_extension)
+        );
         std::fs::rename(
             executable,
             to_folder.to_string() + Slicer::target(archive_without_extension),
